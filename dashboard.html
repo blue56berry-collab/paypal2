@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - PayPal Clone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f3f4f6;
+    }
+    header {
+      background: #0070ba;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #0070ba;
+    }
+    .balance {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #333;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav a {
+      display: inline-block;
+      margin: 5px 8px;
+      text-decoration: none;
+      background: #0070ba;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    nav a:hover {
+      background: #005c96;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    .logout {
+      background: crimson;
+      float: right;
+    }
+    .logout:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PayPal Clone</h1>
+  </header>
+  <div class="container">
+    <h2>Welcome, <span id="userName"></span></h2>
+    <p class="balance">Balance: $<span id="userBalance">0</span></p>
+    
+    <nav>
+      <a href="wallet.html">Wallet</a>
+      <a href="send.html">Send Money</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="mailbox.html">Mailbox</a>
+      <a href="settings.html">Settings</a>
+      <a href="#" class="logout" onclick="logout()">Logout</a>
+    </nav>
+    
+    <h3>Recent Transactions</h3>
+    <table id="transactionsTable">
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Note</th>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    // Get current user session
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("You must log in first!");
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("userName").textContent = currentUser.username;
+      document.getElementById("userBalance").textContent = currentUser.balance.toFixed(2);
+
+      // Load transactions
+      const txTable = document.getElementById("transactionsTable");
+      const transactions = currentUser.transactions || [];
+
+      if (transactions.length === 0) {
+        let row = txTable.insertRow();
+        let cell = row.insertCell(0);
+        cell.colSpan = 4;
+        cell.textContent = "No transactions yet.";
+      } else {
+        transactions.slice(-5).reverse().forEach(tx => {
+          let row = txTable.insertRow();
+          row.insertCell(0).textContent = tx.date;
+          row.insertCell(1).textContent = tx.type;
+          row.insertCell(2).textContent = "$" + tx.amount.toFixed(2);
+          row.insertCell(3).textContent = tx.note || "-";
+        });
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
