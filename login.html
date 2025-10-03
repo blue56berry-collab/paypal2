@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Log in — CoinSend</title>
+<style>
+:root{--bg:#071226;--accent:#34d399;--glass:rgba(255,255,255,0.03);--muted:#9fb0c6}
+body{margin:0;min-height:100vh;background:linear-gradient(180deg,#071226,#081226);font-family:Inter,system-ui,Segoe UI,Arial;color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:26px;border-radius:14px;max-width:420px;width:100%;box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+form{display:grid;gap:12px}
+input,button{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+button{background:linear-gradient(90deg,var(--accent),#60a5fa);border:none;color:#042029;font-weight:700}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Log in</h2>
+<div class="muted">Use email and password</div>
+<form id="loginForm">
+<input id="email" type="email" placeholder="Email" required />
+<input id="password" type="password" placeholder="Password" required />
+<div style="display:flex;gap:8px">
+<button type="submit">Sign in</button>
+<a href="reset.html" style="align-self:center;color:var(--muted);text-decoration:underline">Reset?</a>
+</div>
+</form>
+</div>
+
+
+<script>
+async function sha256(str){
+const enc = new TextEncoder();
+const data = enc.encode(str);
+const hashBuf = await crypto.subtle.digest('SHA-256', data);
+const hashArr = Array.from(new Uint8Array(hashBuf));
+return hashArr.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+
+function loadUsers(){try{return JSON.parse(localStorage.getItem(
